@@ -5,7 +5,7 @@
 {% block content %}
 <h2>Decode Seite</h2>
 <form action="{{ url_for('decode') }}" method="POST" enctype="multipart/form-data">
-    <label for="stego_file">Stegodatei:</label>
+    <label for="stego_file">Stegodatei (JPEG):</label>
     <input type="file" id="stego_file" name="stego_file" required><br><br>
 
     <label for="spacer_text">Spacer Text:</label>

@@ -1,11 +1,11 @@
 from flask import Flask, render_template, request, redirect, url_for
 from werkzeug.utils import secure_filename
 import os
+import time
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads'
 
-# Erstelle den Upload-Ordner, falls er nicht existiert
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 @app.route('/')
@@ -19,18 +19,26 @@ def encode():
         png_file = request.files.get('png_file')
         spacer_text = request.form.get('spacer_text')
         
-        # Dateien speichern, falls hochgeladen
         if jpeg_file and png_file:
+            request_time = time.time()
+            os.makedirs(os.path.join(app.config['UPLOAD_FOLDER'],str(request_time)),exist_ok=True)
+
+            # Bilder Speichern
             jpeg_filename = secure_filename(jpeg_file.filename)
             png_filename = secure_filename(png_file.filename)
-            jpeg_file.save(os.path.join(app.config['UPLOAD_FOLDER'], jpeg_filename))
-            png_file.save(os.path.join(app.config['UPLOAD_FOLDER'], png_filename))
-            
-            # Hier kommt der Platzhalter für den Stego-Befehl
-            # z.B. stego_encode(jpeg_filename, png_filename, spacer_text)
 
+
+            # TxT Speichern
+            txt_filename = os.path.join(app.config['UPLOAD_FOLDER'],str(request_time),"spacer.txt")
+            with open(txt_filename, 'w', encoding='utf-8') as datei:
+                datei.write(spacer_text)
+
+
+            jpeg_file.save(os.path.join(app.config['UPLOAD_FOLDER'],str(request_time), jpeg_filename))
+            png_file.save(os.path.join(app.config['UPLOAD_FOLDER'],str(request_time), png_filename))
+            
             return redirect(url_for('decode'))
-        
+
     return render_template('encode.html')
 
 @app.route('/decode', methods=['GET', 'POST'])
@@ -39,13 +47,11 @@ def decode():
         stego_file = request.files.get('stego_file')
         spacer_text = request.form.get('spacer_text')
         
-        # Datei speichern und mit Spacer-Text verarbeiten, falls hochgeladen
         if stego_file:
+            
             stego_filename = secure_filename(stego_file.filename)
             stego_file.save(os.path.join(app.config['UPLOAD_FOLDER'], stego_filename))
             
-            # Hier kommt der Platzhalter für den Stego-Befehl
-            # z.B. hidden_file = stego_decode(stego_filename, spacer_text)
             hidden_file = "dummy_hidden_file.png"  # Platzhalter für den versteckten Dateinamen
             
             return redirect(url_for('download_file', filename=hidden_file))
