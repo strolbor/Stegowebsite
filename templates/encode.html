@@ -16,5 +16,17 @@
 
     <button type="submit">Generieren</button>
 </form>
+
+{% if stego_filename %}
+    <h3>Generierte Stego-Datei</h3>
+    <img src="{{ url_for('uploaded_file', filename=stego_filename, reqtime=reqtime) }}" alt="Stego-Datei" style="max-width:100%; height:auto;">
+    <br />
+    <a target="_blank"  href="{{ url_for('download_file', filename=stego_filename, reqtime=reqtime) }}">Download</a>
+
+{% else %}
+    <p>Keine Stego-Datei zum Anzeigen.</p>
+{% endif %}
+
+
 {% endblock %}
 

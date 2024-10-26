@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, send_from_directory
 from werkzeug.utils import secure_filename
 import os
 import time
@@ -37,7 +37,10 @@ def encode():
             jpeg_file.save(os.path.join(app.config['UPLOAD_FOLDER'],str(request_time), jpeg_filename))
             png_file.save(os.path.join(app.config['UPLOAD_FOLDER'],str(request_time), png_filename))
             
-            return redirect(url_for('decode'))
+            #return redirect(url_for('decode'))
+            stego_filename = png_filename
+            reqtime = str(request_time)
+            return render_template('encode.html',stego_filename=stego_filename,reqtime=reqtime)
 
     return render_template('encode.html')
 
@@ -58,9 +61,15 @@ def decode():
 
     return render_template('decode.html')
 
-@app.route('/download/<filename>')
-def download_file(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER'], filename, as_attachment=True)
+@app.route('/download/<reqtime>/<filename>')
+def download_file(reqtime,filename):
+    return send_from_directory(os.path.join(app.config['UPLOAD_FOLDER'],reqtime), filename, as_attachment=True)
+
+@app.route('/uploads/<reqtime>/<filename>')
+def uploaded_file(reqtime,filename):
+    return send_from_directory(os.path.join(app.config['UPLOAD_FOLDER'],reqtime), filename)
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
