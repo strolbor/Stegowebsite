@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Encode - Stego App{% endblock %}
+
+{% block content %}
+<h2>Encode Seite</h2>
+<form action="{{ url_for('encode') }}" method="POST" enctype="multipart/form-data">
+    <label for="jpeg_file">JPEG Datei:</label>
+    <input type="file" id="jpeg_file" name="jpeg_file" accept=".jpeg,.jpg" required><br><br>
+
+    <label for="png_file">PNG Datei:</label>
+    <input type="file" id="png_file" name="png_file" accept=".png" required><br><br>
+
+    <label for="spacer_text">Spacer Text:</label>
+    <input type="text" id="spacer_text" name="spacer_text" required><br><br>
+
+    <button type="submit">Generieren</button>
+</form>
+{% endblock %}
+
