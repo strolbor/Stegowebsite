@@ -70,5 +70,17 @@ def uploaded_file(reqtime,filename):
 
 
 
+
+"""Dies ist für decode notwenig. Um Scapel zu konfigurieren."""
+def txt_datei_zu_hex(dateipfad):
+    with open(dateipfad, 'rb') as datei:
+        hex_output = datei.read().hex()
+        escaped_string = ''.join(f'\\x{byte:02x}' for byte in bytes.fromhex(hex_output))
+        print(hex_output) # Ausgabe:  42420a
+        print(escaped_string)  # Ausgabe: \x42\x42\x0a
+        out = [hex_output,escaped_string]
+        return out
+
+
 if __name__ == '__main__':
     app.run(debug=True)
