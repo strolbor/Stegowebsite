@@ -20,8 +20,8 @@ def encode():
         spacer_text = request.form.get('spacer_text')
         
         if jpeg_file and png_file:
-            request_time = time.time()
-            os.makedirs(os.path.join(app.config['UPLOAD_FOLDER'],str(request_time)),exist_ok=True)
+            request_time = str(time.time())
+            os.makedirs(os.path.join(app.config['UPLOAD_FOLDER'],request_time),exist_ok=True)
 
             # Bilder Speichern
             jpeg_filename = secure_filename(jpeg_file.filename)
@@ -29,18 +29,17 @@ def encode():
 
 
             # TxT Speichern
-            txt_filename = os.path.join(app.config['UPLOAD_FOLDER'],str(request_time),"spacer.txt")
+            txt_filename = os.path.join(app.config['UPLOAD_FOLDER'],request_time,"spacer.txt")
             with open(txt_filename, 'w', encoding='utf-8') as datei:
                 datei.write(spacer_text)
 
 
-            jpeg_file.save(os.path.join(app.config['UPLOAD_FOLDER'],str(request_time), jpeg_filename))
-            png_file.save(os.path.join(app.config['UPLOAD_FOLDER'],str(request_time), png_filename))
+            jpeg_file.save(os.path.join(app.config['UPLOAD_FOLDER'],request_time, jpeg_filename))
+            png_file.save(os.path.join(app.config['UPLOAD_FOLDER'],request_time, png_filename))
             
             #return redirect(url_for('decode'))
             stego_filename = png_filename
-            reqtime = str(request_time)
-            return render_template('encode.html',stego_filename=stego_filename,reqtime=reqtime)
+            return render_template('encode.html',stego_filename=stego_filename,reqtime=request_time)
 
     return render_template('encode.html')
 
