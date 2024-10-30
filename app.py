@@ -48,7 +48,7 @@ def encode():
                 encoded_string = base64.b64encode(b64file.read())
             
             png_nameb64 = png_name+".b64"
-            with open(png_name+".b64","wb") as file:
+            with open(png_nameb64,"wb") as file:
                 file.write(encoded_string)
 
             # Einbetten
@@ -105,4 +105,4 @@ def txt_datei_zu_hex(dateipfad):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True,ssl_context='adhoc')
