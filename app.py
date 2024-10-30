@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, send_from_
 from werkzeug.utils import secure_filename
 import os
 import time
+import base64
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads'
@@ -21,24 +22,45 @@ def encode():
         
         if jpeg_file and png_file:
             request_time = str(time.time())
-            os.makedirs(os.path.join(app.config['UPLOAD_FOLDER'],request_time),exist_ok=True)
+            path = os.path.join(app.config['UPLOAD_FOLDER'],request_time)
+            os.makedirs(path,exist_ok=True)
 
-            # Bilder Speichern
+            # sicher namen
             jpeg_filename = secure_filename(jpeg_file.filename)
             png_filename = secure_filename(png_file.filename)
 
 
             # TxT Speichern
-            txt_filename = os.path.join(app.config['UPLOAD_FOLDER'],request_time,"spacer.txt")
-            with open(txt_filename, 'w', encoding='utf-8') as datei:
+            spacerTXT = os.path.join(path,"spacer.txt")
+            with open(spacerTXT, 'w', encoding='utf-8') as datei:
                 datei.write(spacer_text)
 
+            # Bilder speichern
+            jpeg_path = os.path.join(path, jpeg_filename)
+            jpeg_file.save(jpeg_path)
 
-            jpeg_file.save(os.path.join(app.config['UPLOAD_FOLDER'],request_time, jpeg_filename))
-            png_file.save(os.path.join(app.config['UPLOAD_FOLDER'],request_time, png_filename))
+            png_name = os.path.join(path, png_filename)
+            png_file.save(png_name)
             
-            #return redirect(url_for('decode'))
-            stego_filename = png_filename
+            # Encode
+            encoded_string = None
+            with open(png_name,"rb") as b64file:
+                encoded_string = base64.b64encode(b64file.read())
+            
+            png_nameb64 = png_name+".b64"
+            with open(png_name+".b64","wb") as file:
+                file.write(encoded_string)
+
+            # Einbetten
+            ## cat coverfile.jpg spacer.txt secret_msg_in.b64 > output.jpg
+            output_filename = "output.jpg"
+            outputfile = os.path.join(path,output_filename)
+            cmd = f"cat {jpeg_path} {spacerTXT} {png_nameb64} > {outputfile}"
+            #print(cmd)
+            os.system(cmd)
+
+            # Return
+            stego_filename = output_filename
             return render_template('encode.html',stego_filename=stego_filename,reqtime=request_time)
 
     return render_template('encode.html')
