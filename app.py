@@ -72,13 +72,25 @@ def decode():
         spacer_text = request.form.get('spacer_text')
         
         if stego_file:
+            request_time = str(time.time())
+            path = os.path.join(app.config['UPLOAD_FOLDER'], request_time)
+            os.makedirs(path,exist_ok=True)
             
             stego_filename = secure_filename(stego_file.filename)
-            stego_file.save(os.path.join(app.config['UPLOAD_FOLDER'], stego_filename))
+            stego_file.save(os.path.join(path, stego_filename))
             
-            hidden_file = "dummy_hidden_file.png"  # Platzhalter für den versteckten Dateinamen
+            #extrakt hidden png
+            hidden_filename = 'hidden.png'
+            tmp = ''
+            with open(os.path.join(path, stego_filename), 'rb') as file:
+                hidden_file = file.read()
+            tmp = hidden_file.split(bytes(spacer_text, 'utf-8'))[1] #the raw png in str
             
-            return redirect(url_for('download_file', filename=hidden_file))
+            #save png
+            with open(os.path.join(path, hidden_filename), 'wb') as pic:
+                pic.write(base64.b64decode(tmp))
+
+            return redirect(url_for('download_file', filename=hidden_filename, reqtime=request_time))
 
     return render_template('decode.html')
 
