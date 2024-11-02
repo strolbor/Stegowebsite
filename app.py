@@ -25,7 +25,7 @@ def encode():
             path = os.path.join(app.config['UPLOAD_FOLDER'],request_time)
             os.makedirs(path,exist_ok=True)
 
-            # sicher namen
+            # sicherer namen
             jpeg_filename = secure_filename(jpeg_file.filename)
             png_filename = secure_filename(png_file.filename)
 
@@ -51,13 +51,27 @@ def encode():
             with open(png_nameb64,"wb") as file:
                 file.write(encoded_string)
 
-            # Einbetten
-            ## cat coverfile.jpg spacer.txt secret_msg_in.b64 > output.jpg
             output_filename = "output.jpg"
             outputfile = os.path.join(path,output_filename)
-            cmd = f"cat {jpeg_path} {spacerTXT} {png_nameb64} > {outputfile}"
+            # Einbetten
+            ## cat coverfile.jpg spacer.txt secret_msg_in.b64 > output.jpg
+            
+            #cmd = f"cat {jpeg_path} {spacerTXT} {png_nameb64} > {outputfile}"
             #print(cmd)
-            os.system(cmd)
+            #os.system(cmd)
+
+
+            # Neu
+            with open(os.path.join(path, jpeg_filename), 'rb') as file:
+                jpeg_data = file.read()
+            concatenated_data = jpeg_data + bytes(spacer_text, 'utf-8') + encoded_string
+            print(concatenated_data)
+            with open(outputfile,"wb") as file:
+                file.write(concatenated_data)
+
+
+
+           
 
             # Return
             stego_filename = output_filename
