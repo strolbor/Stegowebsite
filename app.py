@@ -65,7 +65,6 @@ def encode():
             with open(os.path.join(path, jpeg_filename), 'rb') as file:
                 jpeg_data = file.read()
             concatenated_data = jpeg_data + bytes(spacer_text, 'utf-8') + encoded_string
-            print(concatenated_data)
             with open(outputfile,"wb") as file:
                 file.write(concatenated_data)
 
