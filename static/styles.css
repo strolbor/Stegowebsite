@@ -7,8 +7,9 @@ body {
     color: #fff;
     display: flex;
     justify-content: center;
-    align-items: center;
-    height: 100vh;
+    align-items: flex-start; /* Ändere von center zu flex-start */
+    min-height: 100vh; /* Verwende min-height statt height */
+    padding: 20px; /* Füge Padding hinzu, um Platz für den Inhalt zu schaffen */
 }
 
 /* Container-Styling */
@@ -20,6 +21,8 @@ body {
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     text-align: center;
+    position: relative; /* Stelle sicher, dass z-index funktioniert */
+    z-index: 1; /* Setze einen höheren z-index */
 }
 
 /* Header-Styling */
@@ -61,6 +64,8 @@ button {
     padding: 8px;
     border-radius: 4px;
     border: none;
+    width: 100%; /* Füge Breite hinzu für bessere Darstellung */
+    max-width: 300px;
 }
 
 button {
@@ -79,4 +84,13 @@ footer {
     margin-top: 20px;
     font-size: 0.8em;
     color: #ccc;
+}
+
+/* Optional: Feste Position für den Header */
+header {
+    position: sticky;
+    top: 0;
+    /*background-color: rgba(255, 255, 255, 0.9); /* Hintergrund für den Header */
+    padding: 10px 0;
+    z-index: 2; /* Höher als der Container */
 }
