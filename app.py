@@ -47,30 +47,16 @@ def encode():
             with open(png_name,"rb") as b64file:
                 encoded_string = base64.b64encode(b64file.read())
             
-            png_nameb64 = png_name+".b64"
-            with open(png_nameb64,"wb") as file:
-                file.write(encoded_string)
-
+            # Output File
             output_filename = "output.jpg"
             outputfile = os.path.join(path,output_filename)
-            # Einbetten
-            ## cat coverfile.jpg spacer.txt secret_msg_in.b64 > output.jpg
-            
-            #cmd = f"cat {jpeg_path} {spacerTXT} {png_nameb64} > {outputfile}"
-            #print(cmd)
-            #os.system(cmd)
 
-
-            # Neu
+            # Concat
             with open(os.path.join(path, jpeg_filename), 'rb') as file:
                 jpeg_data = file.read()
             concatenated_data = jpeg_data + bytes(spacer_text, 'utf-8') + encoded_string
             with open(outputfile,"wb") as file:
                 file.write(concatenated_data)
-
-
-
-           
 
             # Return
             stego_filename = output_filename
@@ -115,18 +101,6 @@ def download_file(reqtime,filename):
 def uploaded_file(reqtime,filename):
     return send_from_directory(os.path.join(app.config['UPLOAD_FOLDER'],reqtime), filename)
 
-
-
-
-"""Dies ist für decode notwenig. Um Scapel zu konfigurieren."""
-def txt_datei_zu_hex(dateipfad):
-    with open(dateipfad, 'rb') as datei:
-        hex_output = datei.read().hex()
-        escaped_string = ''.join(f'\\x{byte:02x}' for byte in bytes.fromhex(hex_output))
-        print(hex_output) # Ausgabe:  42420a
-        print(escaped_string)  # Ausgabe: \x42\x42\x0a
-        out = [hex_output,escaped_string]
-        return out
 
 
 if __name__ == '__main__':
