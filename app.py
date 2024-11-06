@@ -4,16 +4,16 @@ import os
 import time
 import base64
 
-app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = 'uploads'
+application = Flask(__name__)
+application.config['UPLOAD_FOLDER'] = 'uploads'
 
-os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+os.makedirs(application.config['UPLOAD_FOLDER'], exist_ok=True)
 
-@app.route('/')
+@application.route('/')
 def home():
     return redirect(url_for('encode'))
 
-@app.route('/encode', methods=['GET', 'POST'])
+@application.route('/encode', methods=['GET', 'POST'])
 def encode():
     if request.method == 'POST':
         jpeg_file = request.files.get('jpeg_file')
@@ -22,7 +22,7 @@ def encode():
         
         if jpeg_file and png_file:
             request_time = str(time.time())
-            path = os.path.join(app.config['UPLOAD_FOLDER'],request_time)
+            path = os.path.join(application.config['UPLOAD_FOLDER'],request_time)
             os.makedirs(path,exist_ok=True)
 
             # sicherer namen
@@ -64,7 +64,7 @@ def encode():
 
     return render_template('encode.html')
 
-@app.route('/decode', methods=['GET', 'POST'])
+@application.route('/decode', methods=['GET', 'POST'])
 def decode():
     if request.method == 'POST':
         stego_file = request.files.get('stego_file')
@@ -72,7 +72,7 @@ def decode():
         
         if stego_file:
             request_time = str(time.time())
-            path = os.path.join(app.config['UPLOAD_FOLDER'], request_time)
+            path = os.path.join(application.config['UPLOAD_FOLDER'], request_time)
             os.makedirs(path,exist_ok=True)
             
             stego_filename = secure_filename(stego_file.filename)
@@ -93,15 +93,15 @@ def decode():
 
     return render_template('decode.html')
 
-@app.route('/download/<reqtime>/<filename>')
+@application.route('/download/<reqtime>/<filename>')
 def download_file(reqtime,filename):
-    return send_from_directory(os.path.join(app.config['UPLOAD_FOLDER'],reqtime), filename, as_attachment=True)
+    return send_from_directory(os.path.join(application.config['UPLOAD_FOLDER'],reqtime), filename, as_attachment=True)
 
-@app.route('/uploads/<reqtime>/<filename>')
+@application.route('/uploads/<reqtime>/<filename>')
 def uploaded_file(reqtime,filename):
-    return send_from_directory(os.path.join(app.config['UPLOAD_FOLDER'],reqtime), filename)
+    return send_from_directory(os.path.join(application.config['UPLOAD_FOLDER'],reqtime), filename)
 
 
 
 if __name__ == '__main__':
-    app.run(debug=True,ssl_context='adhoc')
+    application.run(debug=True,ssl_context='adhoc')
