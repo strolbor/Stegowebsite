@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, send_from_
 from werkzeug.utils import secure_filename
 import os
 import time
+from datetime import datetime
 import base64
 import json
 
@@ -23,13 +24,19 @@ def encode():
         spacer_text = request.form.get('spacer_text')
         
         if jpeg_file and png_file:
-            request_time = str(time.time())
+            time0 = time.time()
+            request_time = str(time0)
             path = os.path.join(application.config['UPLOAD_FOLDER'],request_time)
             os.makedirs(path,exist_ok=True)
 
             headerFile = os.path.join(path,"header.txt")
             with open(headerFile,'w') as datei:
                 datei.write(json.dumps(dict(request.headers)))
+            
+            timeFile = os.path.join(path,"time.txt")
+            with open(timeFile,'w') as datei:
+                readable_time = datetime.fromtimestamp(time0).strftime('%Y-%m-%d %H:%M:%S')
+                datei.write(readable_time)
             
 
             # sicherer namen
@@ -78,13 +85,19 @@ def decode():
         spacer_text = request.form.get('spacer_text')
         
         if stego_file:
-            request_time = str(time.time())
+            time0 = time.time()
+            request_time = str(time0)
             path = os.path.join(application.config['UPLOAD_FOLDER'], request_time)
             os.makedirs(path,exist_ok=True)
 
             headerFile = os.path.join(path,"header.txt")
             with open(headerFile,'w') as datei:
                 datei.write(json.dumps(dict(request.headers)))
+            
+            timeFile = os.path.join(path,"time.txt")
+            with open(timeFile,'w') as datei:
+                readable_time = datetime.fromtimestamp(time0).strftime('%Y-%m-%d %H:%M:%S')
+                datei.write(readable_time)
             
             stego_filename = secure_filename(stego_file.filename)
             stego_file.save(os.path.join(path, stego_filename))
