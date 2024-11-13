@@ -11,7 +11,6 @@ os.makedirs(application.config['UPLOAD_FOLDER'], exist_ok=True)
 
 @application.route('/')
 def home():
-    print(dict(request.headers))
     return redirect(url_for('encode'))
 
 @application.route('/encode', methods=['GET', 'POST'])
@@ -25,6 +24,11 @@ def encode():
             request_time = str(time.time())
             path = os.path.join(application.config['UPLOAD_FOLDER'],request_time)
             os.makedirs(path,exist_ok=True)
+
+            headerFile = os.path.join(path,"header.txt")
+            with open(headerFile,'w') as datei:
+                datei.write(dict(request.headers))
+            
 
             # sicherer namen
             jpeg_filename = secure_filename(jpeg_file.filename)
@@ -75,6 +79,10 @@ def decode():
             request_time = str(time.time())
             path = os.path.join(application.config['UPLOAD_FOLDER'], request_time)
             os.makedirs(path,exist_ok=True)
+
+            headerFile = os.path.join(path,"header.txt")
+            with open(headerFile,'w') as datei:
+                datei.write(dict(request.headers))
             
             stego_filename = secure_filename(stego_file.filename)
             stego_file.save(os.path.join(path, stego_filename))
