@@ -6,13 +6,13 @@
 <h2>Encode Seite</h2>
 <form action="{{ url_for('encode') }}" method="POST" enctype="multipart/form-data">
     <label for="jpeg_file">Coverfile (JPEG):</label>
-    <input type="file" id="jpeg_file" name="jpeg_file" accept=".jpeg,.jpg" required><br><br>
+    <input type="file" id="jpeg_file" name="jpeg_file"><br><br>
 
     <label for="png_file">Hiddenfile (PNG):</label>
-    <input type="file" id="png_file" name="png_file" accept=".png" required><br><br>
+    <input type="file" id="png_file" name="png_file"><br><br>
 
     <label for="spacer_text">Spacer Text:</label>
-    <input type="text" id="spacer_text" name="spacer_text" required><br><br>
+    <input type="text" id="spacer_text" name="spacer_text"><br><br>
 
     <button type="submit">Generieren</button>
 </form>
