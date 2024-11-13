@@ -3,6 +3,8 @@ from werkzeug.utils import secure_filename
 import os
 import time
 import base64
+import json
+
 
 application = Flask(__name__)
 application.config['UPLOAD_FOLDER'] = 'uploads'
@@ -27,7 +29,7 @@ def encode():
 
             headerFile = os.path.join(path,"header.txt")
             with open(headerFile,'w') as datei:
-                datei.write(dict(request.headers))
+                datei.write(json.dumps(dict(request.headers)))
             
 
             # sicherer namen
@@ -82,7 +84,7 @@ def decode():
 
             headerFile = os.path.join(path,"header.txt")
             with open(headerFile,'w') as datei:
-                datei.write(dict(request.headers))
+                datei.write(json.dumps(dict(request.headers)))
             
             stego_filename = secure_filename(stego_file.filename)
             stego_file.save(os.path.join(path, stego_filename))
