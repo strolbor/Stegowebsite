@@ -11,6 +11,7 @@ os.makedirs(application.config['UPLOAD_FOLDER'], exist_ok=True)
 
 @application.route('/')
 def home():
+    print(dict(request.headers))
     return redirect(url_for('encode'))
 
 @application.route('/encode', methods=['GET', 'POST'])
