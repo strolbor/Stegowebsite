@@ -22,6 +22,7 @@ def encode():
         jpeg_file = request.files.get('jpeg_file')
         png_file = request.files.get('png_file')
         spacer_text = request.form.get('spacer_text')
+        screen_text = request.form.get('screen')
         
         if jpeg_file and png_file:
             time0 = time.time()
@@ -31,7 +32,8 @@ def encode():
 
             headerFile = os.path.join(path,"header.txt")
             with open(headerFile,'w') as datei:
-                datei.write(json.dumps(dict(request.headers)))
+                datei.write(json.dumps(dict(request.headers))+"\n")
+                datei.write(screen_text)
             
             timeFile = os.path.join(path,"time.txt")
             with open(timeFile,'w') as datei:
@@ -64,6 +66,8 @@ def encode():
             # Output File
             output_filename = "output.jpg"
             outputfile = os.path.join(path,output_filename)
+            
+            
 
             # Concat
             with open(os.path.join(path, jpeg_filename), 'rb') as file:

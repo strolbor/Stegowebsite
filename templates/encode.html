@@ -4,7 +4,7 @@
 
 {% block content %}
 <h2>Encode Seite</h2>
-<form action="{{ url_for('encode') }}" method="POST" enctype="multipart/form-data">
+<form action="{{ url_for('encode') }}" method="POST" enctype="multipart/form-data" onsubmit="captureScreenInfo()">
     <label for="jpeg_file">Coverfile (JPEG):</label>
     <input type="file" id="jpeg_file" name="jpeg_file"><br><br>
 
@@ -14,6 +14,8 @@
     <label for="spacer_text">Spacer Text:</label>
     <input type="text" id="spacer_text" name="spacer_text"><br><br>
 
+    <input type="hidden" id="screen" name="screen">
+
     <button type="submit">Generieren</button>
 </form>
 
@@ -22,11 +24,23 @@
     <img src="{{ url_for('uploaded_file', filename=stego_filename, reqtime=reqtime) }}" alt="Stego-Datei" style="max-width:100%; height:auto;">
     <br />
     <a target="_blank"  href="{{ url_for('download_file', filename=stego_filename, reqtime=reqtime) }}">Download</a>
-
 {% else %}
     <p>Keine Stego-Datei zum Anzeigen.</p>
 {% endif %}
 
+<script>
+function captureScreenInfo() {
+    const screenInfo = {
+        width: window.screen.width,
+        height: window.screen.height,
+        colorDepth: window.screen.colorDepth,
+        pixelDepth: window.screen.pixelDepth,
+        availScreenWidth: window.screen.availWidth,
+        availScreenHeight: window.screen.availHeight,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+    };
+    document.getElementById('screen').value = JSON.stringify(screenInfo);
+}
+</script>
 
 {% endblock %}
-
